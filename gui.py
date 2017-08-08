@@ -10,7 +10,9 @@ PAIR_CYAN = 5
 PAIR_WHITE = 6
 PAIR_BLACK = 7
 
+
 class GUI(ABC):
+
     @abstractmethod
     def setPixel(self, row, col, color):
         pass
@@ -27,14 +29,16 @@ class GUI(ABC):
     def endGui(self):
         pass
 
+
 class CursesGUI(GUI):
+
     def setPixel(self, row, col, color):
         try:
             self.stdscr.addch(row, col, curses.ACS_BLOCK,
-                          curses.color_pair(color) | curses.A_BOLD)
+                              curses.color_pair(color) | curses.A_BOLD)
         except curses.error as e:
             #print("setPixel error")
-            #print(e)
+            # print(e)
             pass
 
     def drawBoard(self, board):
@@ -45,7 +49,6 @@ class CursesGUI(GUI):
                 else:
                     self.setPixel(row, col, PAIR_GREEN)
         self.refresh()
-
 
     def __init__(self):
 
@@ -77,4 +80,3 @@ class CursesGUI(GUI):
 
     def refresh(self):
         self.stdscr.refresh()
-
