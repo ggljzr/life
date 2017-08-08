@@ -17,6 +17,8 @@ if __name__ == '__main__':
         c = board.gui.stdscr.getch()
         if c == ord('q'):
             break
+        elif c == ord('s'):
+            board.step()
 
 
     board.end()

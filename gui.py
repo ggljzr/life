@@ -33,8 +33,9 @@ class CursesGUI(GUI):
             self.stdscr.addch(row, col, curses.ACS_BLOCK,
                           curses.color_pair(color) | curses.A_BOLD)
         except curses.error as e:
-            print("setPixel error")
-            print(e)
+            #print("setPixel error")
+            #print(e)
+            pass
 
     def drawBoard(self, board):
         for row in range(0, board.shape[0]):
