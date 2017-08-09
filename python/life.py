@@ -8,7 +8,7 @@ if __name__ == '__main__':
     term_rows, term_cols = subprocess.check_output(['stty', 'size']).split()
     term_rows = int(term_rows)
     term_cols = int(term_cols)
-    
+
     board = Board(term_rows, term_cols)
     board.start()
     board.gui.setPixel(0, 0, 7)
@@ -19,6 +19,5 @@ if __name__ == '__main__':
             break
         elif c == ord('s'):
             board.step()
-
 
     board.end()
