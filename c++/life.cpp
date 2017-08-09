@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
 
     srand(time(NULL));
 
-    cv::Mat display = cv::Mat::zeros(w, h, CV_8UC3);
+    cv::Mat display = cv::Mat::zeros(h, w, CV_8UC3);
     initGame(&display);
     cv::namedWindow(DISPLAY_NAME, 1);
 
