@@ -1,5 +1,5 @@
-__pycache__
-CMakeCache.tt
+CMakeCache.txt
 *.cmake
 *.out
 CMakeFiles
+c++/Makefile
