@@ -17,10 +17,10 @@
 int getNeigboursSum(const cv::Mat * mat, int x, int y)
 {
     int rows = mat->rows;
-    int cols = mat->cols;
+    int channels = mat->channels();
+    int cols = mat->cols * channels;
 
     int sum = 0;
-
     for(int i = y - 1; i <= y + 1;i ++)
     {
         if(i < 0 || i >= rows)
@@ -28,12 +28,18 @@ int getNeigboursSum(const cv::Mat * mat, int x, int y)
 
         const uchar* row = mat->ptr<uchar>(i);
 
-        for(int j = x - 1; j <= x + 1; j++)
+        for(int j = x - channels; j <= x + channels; j += channels)
         {
-            //printf("[%d][%d] = %d\n", i, j, row[j]);
             if(j < 0 || j >= cols || (j == x && i == y))
                 continue;
-            sum += row[j] / 255;
+            //printf("[%d][%d] = %d\n", i, j, row[j]);
+            //sum += row[j] / 255;
+            int inc = 0;
+            for(int c = 0; c < channels; c++)
+            {
+                inc = row[j + c] || inc;
+            }
+            sum += inc;
         }
     }
 
@@ -43,17 +49,24 @@ int getNeigboursSum(const cv::Mat * mat, int x, int y)
 int initGame(cv::Mat * mat)
 {
     int rows = mat->rows;
-    int cols = mat->cols;
+    int cols = mat->cols * mat->channels();
+    int channels = mat->channels();
 
     for(int i = 0; i < rows; i++)
     {
         uchar * row = mat->ptr<uchar>(i);
-        for(int j = 0; j < cols; j++)
+        for(int j = 0; j < cols; j += channels)
         {
             if((rand() % 3) == 0)
-                row[j] = 255;
+            {
+                int color = rand() % channels;
+                row[j + color] = 255;
+            }
             else
-                row[j] = 0;
+            {
+                for(int c = 0; c < channels; c++)
+                    row[j + c] = 0;
+            }
         }
     }
 }
@@ -61,27 +74,33 @@ int initGame(cv::Mat * mat)
 void step(cv::Mat * mat)
 {
     int rows = mat->rows;
-    int cols = mat->cols;
-    cv::Mat newMat = cv::Mat::zeros(rows, cols, CV_8UC1);
+    int cols = mat->cols * mat->channels();
+    int channels = mat->channels();
+    cv::Mat newMat = cv::Mat::zeros(mat->rows, mat->cols, mat->type());
 
     for(int i = 0; i < rows; i++)
     {
         uchar * row = mat->ptr<uchar>(i);
         uchar * newRow = newMat.ptr<uchar>(i);
-        for(int j = 0; j < cols; j++)
+        for(int j = 0; j < cols; j += channels)
         {
             int neighbours = getNeigboursSum(mat, j, i);
             if(neighbours < 2 || neighbours > 3)
             {
-                newRow[j] = 0;
+                for(int c = 0; c < channels; c++)
+                    newRow[j + c] = 0;
             }
             else if(neighbours == 3)
             {
-                newRow[j] = 255;
+                for(int c = 0; c < channels; c++)
+                    newRow[j + c] = 0;
+                int color = rand() % channels;
+                newRow[j + color] = 255;
             }
             else
             {
-                newRow[j] = row[j];
+                for(int c = 0; c < channels; c++)
+                    newRow[j + c] = row[j + c];
             }
         }
     }
@@ -96,12 +115,12 @@ int main(int argc, char ** argv)
 
     srand(time(NULL));
 
-    cv::Mat display = cv::Mat::zeros(w, h, CV_8UC1);
+    cv::Mat display = cv::Mat::zeros(w, h, CV_8UC3);
     initGame(&display);
     cv::namedWindow(DISPLAY_NAME, 1);
 
     //std::cout << display << std::endl;
-    //std::cout << getNeigboursSum(&display, 1,1) << std::endl;
+    //std::cout << getNeigboursSum(&display, 3,1) << std::endl;
 
     cv::imshow(DISPLAY_NAME, display);
 
