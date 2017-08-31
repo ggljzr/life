@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project( life )
 find_package( OpenCV REQUIRED )
-add_executable( life.out life.cpp )
-target_link_libraries( life.out ${OpenCV_LIBS} )
+add_executable( life life.cpp )
+target_link_libraries( life ${OpenCV_LIBS} )
 set(CMAKE_BUILD_TYPE Release)
